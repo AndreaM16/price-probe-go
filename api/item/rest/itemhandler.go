@@ -3,7 +3,7 @@ package itemrest
 import (
 	"net/http"
 
-	"../factory"
+	"github.com/andream16/price-probe-go/api/item/factory"
 )
 
 func ItemHandler() func(w http.ResponseWriter, r *http.Request) {

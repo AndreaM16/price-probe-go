@@ -7,8 +7,8 @@ import (
 	"strconv"
 	"strings"
 
-	"../api/item/rest"
-	"../configuration"
+	"github.com/andream16/price-probe-go/api/item/rest"
+	"github.com/andream16/price-probe-go/configuration"
 	"github.com/gorilla/mux"
 )
 

@@ -1,9 +1,9 @@
-package cassandramanager
+package cassandra
 
 import (
 	"errors"
 
-	"../configuration"
+	"github.com/andream16/price-probe-go/configuration"
 	"github.com/gocql/gocql"
 )
 

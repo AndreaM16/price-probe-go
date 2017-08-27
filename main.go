@@ -3,13 +3,15 @@ package main
 import (
 	"fmt"
 
-	"../configuration"
-	"../server"
+	"github.com/andream16/price-probe-go/configuration"
+
+	"github.com/andream16/price-probe-go/server"
 )
 
 func main() {
 
 	conf := configuration.InitConfiguration()
+
 	/*fmt.Println("Trying to enstablish a connection to a Cassandra Cluster . . .")
 	s, err := cassandramanager.InitCassandraClient(conf)
 	if err != nil {
@@ -19,6 +21,7 @@ func main() {
 	}*/
 
 	fmt.Println("Starting server . . .")
+
 	server.InitServer(conf)
 
 }
