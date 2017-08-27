@@ -1,4 +1,4 @@
-package api
+package itemrest
 
 import (
 	"net/http"

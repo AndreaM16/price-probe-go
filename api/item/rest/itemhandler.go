@@ -1,8 +1,9 @@
-package api
+package itemrest
 
 import (
-	"fmt"
 	"net/http"
+
+	"../factory"
 )
 
 func ItemHandler() func(w http.ResponseWriter, r *http.Request) {
@@ -15,21 +16,9 @@ func ItemHandler() func(w http.ResponseWriter, r *http.Request) {
 		}
 		switch queryType {
 		case "query":
-			key := GetParameterFromUrlByKey("key", r)
-			switch key {
-			case "id":
-				fmt.Println("Got Id")
-			case "pid":
-				fmt.Println("Got Pid")
-			case "category":
-				fmt.Println("Got Catgory")
-			case "title":
-				fmt.Println("Got Title")
-			case "url":
-				fmt.Println("Got Url")
-			}
+			itemfactory.ItemReceiver(r)
 		case "plain":
-			fmt.Println("Got Page & Size")
+			itemfactory.ItemsReceiver(r)
 		}
 		w.WriteHeader(http.StatusOK)
 		return
