@@ -6,6 +6,27 @@ import (
 	"strconv"
 )
 
+func CheckIfParametersAreValid(r *http.Request) (bool, string) {
+	paramsInUrl := parametersInUrl(r)
+	if paramsInUrl {
+		switch getRequestType(r) {
+		case "query":
+			if queryParametersvalid(r) {
+				return true, "query"
+			} else {
+				return false, ""
+			}
+		case "plain":
+			if plainParametersValid(r) {
+				return true, "plain"
+			} else {
+				return false, ""
+			}
+		}
+	}
+	return false, ""
+}
+
 func parametersInUrl(r *http.Request) bool {
 	parameters := r.URL.Query()
 	if len(parameters) < 2 {
@@ -29,8 +50,8 @@ func getRequestType(r *http.Request) string {
 }
 
 func plainParametersValid(r *http.Request) bool {
-	key := getParameterFromUrlByKey("page", r)
-	value := getParameterFromUrlByKey("size", r)
+	key := GetParameterFromUrlByKey("page", r)
+	value := GetParameterFromUrlByKey("size", r)
 	_, err := strconv.Atoi(key)
 	if err != nil {
 		return false
@@ -45,34 +66,13 @@ func plainParametersValid(r *http.Request) bool {
 func queryParametersvalid(r *http.Request) bool {
 	parameters := r.URL.Query()
 	for k, v := range parameters {
-		if reflect.TypeOf(k).Kind() != reflect.String || reflect.TypeOf(v).Kind() != reflect.String {
+		if reflect.TypeOf(k).Kind() != reflect.String || reflect.TypeOf(v).Kind() != reflect.Slice {
 			return false
 		}
 	}
 	return true
 }
 
-func getParameterFromUrlByKey(key string, r *http.Request) string {
+func GetParameterFromUrlByKey(key string, r *http.Request) string {
 	return r.URL.Query().Get(key)
-}
-
-func checkIfParametersAreValid(r *http.Request) bool {
-	paramsInUrl := parametersInUrl(r)
-	if paramsInUrl {
-		switch getRequestType(r) {
-		case "query":
-			if queryParametersvalid(r) {
-				return true
-			} else {
-				return false
-			}
-		case "plain":
-			if plainParametersValid(r) {
-				return true
-			} else {
-				return false
-			}
-		}
-	}
-	return false
 }

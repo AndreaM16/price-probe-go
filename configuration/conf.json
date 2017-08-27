@@ -1,0 +1,11 @@
+{
+    "Server" : {
+        "Host" : "???",
+        "Port" : "???"
+    },
+    "Cassandra" : {
+        "Host" : "???",
+        "Port" : "???",
+        "Keyspace" : "???"
+    }
+}

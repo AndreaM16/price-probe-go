@@ -2,23 +2,23 @@ package main
 
 import (
 	"fmt"
-	"log"
 
-	"../cassandramanager"
+	"../configuration"
 	"../server"
 )
 
 func main() {
 
-	fmt.Println("Trying to enstablish a connection to a Cassandra Cluster . . .")
-	s, err := cassandramanager.InitCassandraClient()
+	conf := configuration.InitConfiguration()
+	/*fmt.Println("Trying to enstablish a connection to a Cassandra Cluster . . .")
+	s, err := cassandramanager.InitCassandraClient(conf)
 	if err != nil {
 		log.Fatal(err.Error())
 	} else {
 		fmt.Println("Connection to Cassandra Cluster successfully enstabilshed!")
-	}
+	}*/
 
 	fmt.Println("Starting server . . .")
-	server.InitServer(s)
+	server.InitServer(conf)
 
 }

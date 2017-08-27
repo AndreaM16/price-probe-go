@@ -3,13 +3,14 @@ package cassandramanager
 import (
 	"errors"
 
+	"../configuration"
 	"github.com/gocql/gocql"
 )
 
-func InitCassandraClient() (gocql.Session, error) {
+func InitCassandraClient(conf configuration.Configuration) (gocql.Session, error) {
 
-	cluster := gocql.NewCluster("54.194.199.230:9042")
-	cluster.Keyspace = "price_probe"
+	cluster := gocql.NewCluster(conf.Cassandra.Host)
+	cluster.Keyspace = conf.Cassandra.Keyspace
 	cluster.Consistency = gocql.Quorum
 	session, err := cluster.CreateSession()
 
