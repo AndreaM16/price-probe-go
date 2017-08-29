@@ -7,7 +7,7 @@ import (
 	"github.com/gocql/gocql"
 )
 
-func InitCassandraClient(conf configuration.Configuration) (gocql.Session, error) {
+func InitCassandraClient(conf *configuration.Configuration) (gocql.Session, error) {
 
 	cluster := gocql.NewCluster(conf.Cassandra.Host)
 	cluster.Keyspace = conf.Cassandra.Keyspace

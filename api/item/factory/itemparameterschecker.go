@@ -1,4 +1,4 @@
-package itemrest
+package itemfactory
 
 import (
 	"net/http"

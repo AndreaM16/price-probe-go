@@ -4,12 +4,13 @@ import (
 	"net/http"
 
 	"github.com/andream16/price-probe-go/api/item/factory"
+	"github.com/gocql/gocql"
 )
 
-func ItemHandler() func(w http.ResponseWriter, r *http.Request) {
+func ItemHandler(session *gocql.Session) func(w http.ResponseWriter, r *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
 
-		paramsValid, queryType := CheckIfParametersAreValid(r)
+		paramsValid, queryType := itemfactory.CheckIfParametersAreValid(r)
 		if !paramsValid {
 			w.WriteHeader(http.StatusBadRequest)
 			return
@@ -18,7 +19,7 @@ func ItemHandler() func(w http.ResponseWriter, r *http.Request) {
 		case "query":
 			itemfactory.ItemReceiver(r)
 		case "plain":
-			itemfactory.ItemsReceiver(r)
+			itemfactory.ItemsReceiver(r, session)
 		}
 		w.WriteHeader(http.StatusOK)
 		return

@@ -1,12 +1,13 @@
 package itemfactory
 
 import (
+	"fmt"
 	"net/http"
 )
 
 func ItemReceiver(r *http.Request) {
 
-	/*key := rest.GetParameterFromUrlByKey("key", r)
+	key := GetParameterFromUrlByKey("key", r)
 	switch key {
 	case "id":
 		fmt.Println("Got Id")
@@ -18,6 +19,6 @@ func ItemReceiver(r *http.Request) {
 		fmt.Println("Got Title")
 	case "url":
 		fmt.Println("Got Url")
-	}*/
+	}
 
 }
