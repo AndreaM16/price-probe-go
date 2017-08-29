@@ -1,4 +1,4 @@
-package server
+package main
 
 import (
 	"fmt"
@@ -12,8 +12,11 @@ import (
 	"github.com/gorilla/mux"
 )
 
-func InitServer(conf configuration.Configuration) {
+func main() {
 
+	conf := configuration.InitConfiguration()
+
+	fmt.Println("Starting server . . .")
 	router := mux.NewRouter()
 	router.HandleFunc("/item", itemrest.ItemHandler())
 	http.Handle("/", router)
