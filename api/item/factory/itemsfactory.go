@@ -39,7 +39,7 @@ func itemsResponseBuilder(queryResult itementity.Items) []byte {
 
 func getItemsFromCassandra(page int, size int, s *gocql.Session) itementity.Items {
 	var item itementity.Item
-	items := make([]itementity.Item, 16)
+	items := make([]itementity.Item, 0)
 	iter := s.Query(`SELECT * FROM `+itemsTable+` LIMIT ?`, size).Consistency(gocql.One).Iter()
 	for {
 		row := map[string]interface{}{
@@ -54,7 +54,9 @@ func getItemsFromCassandra(page int, size int, s *gocql.Session) itementity.Item
 		if !iter.MapScan(row) {
 			break
 		}
-		items = append(items, item)
+		if len(item.ID) > 0 {
+			items = append(items, item)
+		}
 	}
 	return itementity.Items{items}
 }

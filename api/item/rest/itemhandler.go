@@ -11,6 +11,7 @@ import (
 // return http.Response containing http code and json of the result
 func ItemHandler(session *gocql.Session) func(w http.ResponseWriter, r *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Content-Type", "application/json")
 		paramsValid, queryType := itemfactory.CheckIfParametersAreValid(r)
 		if !paramsValid {
 			w.WriteHeader(http.StatusBadRequest)

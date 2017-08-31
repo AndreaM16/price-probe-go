@@ -9,9 +9,11 @@ import (
 	"strings"
 
 	"github.com/andream16/price-probe-go/api/item/rest"
+	"github.com/andream16/price-probe-go/api/price/rest"
 	"github.com/andream16/price-probe-go/cassandra"
 	"github.com/andream16/price-probe-go/configuration"
 	"github.com/gorilla/mux"
+	"github.com/rs/cors"
 )
 
 func main() {
@@ -29,14 +31,22 @@ func main() {
 	fmt.Println("Successfully initialized Cassandra connection . . .")
 
 	fmt.Println("Starting server . . .")
+
+	c := cors.New(cors.Options{
+		AllowedOrigins: []string{"*"},
+		AllowedMethods: []string{"GET"},
+	})
+
 	router := mux.NewRouter()
+
 	router.HandleFunc("/item", itemrest.ItemHandler(&s))
+	router.HandleFunc("/price", pricerest.PriceHandler(&s))
 	http.Handle("/", router)
 
 	port := strconv.Itoa(conf.Server.Port)
 
 	fmt.Println("Started server at port :" + port + ". Now listening . . .")
 	// Bind to a port and pass our router in
-	log.Fatal(http.ListenAndServe(strings.Join([]string{":", port}, ""), router))
+	log.Fatal(http.ListenAndServe(strings.Join([]string{":", port}, ""), c.Handler(router)))
 
 }
