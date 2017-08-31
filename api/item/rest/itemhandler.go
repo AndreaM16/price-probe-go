@@ -7,9 +7,10 @@ import (
 	"github.com/gocql/gocql"
 )
 
+// ItemHandler takes a gocql.Session
+// return http.Response containing http code and json of the result
 func ItemHandler(session *gocql.Session) func(w http.ResponseWriter, r *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
-
 		paramsValid, queryType := itemfactory.CheckIfParametersAreValid(r)
 		if !paramsValid {
 			w.WriteHeader(http.StatusBadRequest)
