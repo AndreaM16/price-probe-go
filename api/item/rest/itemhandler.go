@@ -17,9 +17,13 @@ func ItemHandler(session *gocql.Session) func(w http.ResponseWriter, r *http.Req
 		}
 		switch queryType {
 		case "query":
-			itemfactory.ItemReceiver(r)
+			itemResponse := itemfactory.ItemReceiver(r, session)
+			w.WriteHeader(http.StatusOK)
+			w.Write(itemResponse)
 		case "plain":
-			itemfactory.ItemsReceiver(r, session)
+			itemsResponse := itemfactory.ItemsReceiver(r, session)
+			w.WriteHeader(http.StatusOK)
+			w.Write(itemsResponse)
 		}
 		w.WriteHeader(http.StatusOK)
 		return

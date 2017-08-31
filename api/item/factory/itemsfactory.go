@@ -1,50 +1,65 @@
 package itemfactory
 
 import (
+	"encoding/json"
 	"fmt"
 	"net/http"
 	"os"
 	"strconv"
 
 	"github.com/andream16/price-probe-go/api/item/entity"
-
 	"github.com/gocql/gocql"
 )
 
-func ItemsReceiver(r *http.Request, s *gocql.Session) {
-	page, pageErr := takeParamFromUrl(r, "page")
+// ItemsReceiver takes an *http.Request and a *gocql.Session
+// returns []byte containing the json response of the query result
+func ItemsReceiver(r *http.Request, s *gocql.Session) []byte {
+	page, pageErr := takeParamFromURL(r, "page")
 	if pageErr != nil {
 		fmt.Println("Bad parameter for page. " + pageErr.Error())
 		os.Exit(1)
 	}
-	size, sizeErr := takeParamFromUrl(r, "size")
+	size, sizeErr := takeParamFromURL(r, "size")
 	if sizeErr != nil {
 		fmt.Println("Bad parameter for size. " + sizeErr.Error())
 		os.Exit(1)
 	}
-	getItemsFromCassandra(page, size, s)
+	items := getItemsFromCassandra(page, size, s)
+	return itemsResponseBuilder(items)
 }
 
-// &item.ID, &item.Category, &item.Description, &item.Img, &item.Pid, &item.Title, &item.URL
-func getItemsFromCassandra(page int, size int, s *gocql.Session) {
+func itemsResponseBuilder(queryResult itementity.Items) []byte {
+	var response []byte
+	if len(queryResult.Items) == 0 {
+		return response
+	}
+	response, _ = json.Marshal(queryResult.Items)
+	return response
+}
+
+func getItemsFromCassandra(page int, size int, s *gocql.Session) itementity.Items {
 	var item itementity.Item
-	// var item itementity.Item
-	iter := s.Query(`SELECT * FROM itemst LIMIT ?`, size).Consistency(gocql.One).Iter()
+	items := make([]itementity.Item, 16)
+	iter := s.Query(`SELECT * FROM `+itemsTable+` LIMIT ?`, size).Consistency(gocql.One).Iter()
 	for {
-		// New map each iteration
 		row := map[string]interface{}{
-			"item":     &item.ID,
-			"category": &item.Category,
+			"item":        &item.ID,
+			"category":    &item.Category,
+			"description": &item.Description,
+			"img":         &item.Img,
+			"pid":         &item.Pid,
+			"title":       &item.Title,
+			"url":         &item.URL,
 		}
 		if !iter.MapScan(row) {
 			break
 		}
-		// Do things with row
-		fmt.Printf("Id: %s Category: %s\n", item.ID, item.Category)
+		items = append(items, item)
 	}
+	return itementity.Items{items}
 }
 
-func takeParamFromUrl(r *http.Request, key string) (int, error) {
-	p, e := strconv.Atoi(GetParameterFromUrlByKey(key, r))
+func takeParamFromURL(r *http.Request, key string) (int, error) {
+	p, e := strconv.Atoi(GetParameterFromURLByKey(key, r))
 	return p, e
 }

@@ -6,28 +6,32 @@ import (
 	"strconv"
 )
 
+const itemsTable = "itemst"
+
+// CheckIfParametersAreValid takes an http Request
+// returns a tuple containing bool, string
+// if true, the query is valid and its type (plain, query) is T._2
+// if false, the query is not valid and T,_2 is empty
 func CheckIfParametersAreValid(r *http.Request) (bool, string) {
-	paramsInUrl := parametersInUrl(r)
-	if paramsInUrl {
+	paramsInURL := parametersInURL(r)
+	if paramsInURL {
 		switch getRequestType(r) {
 		case "query":
 			if queryParametersvalid(r) {
 				return true, "query"
-			} else {
-				return false, ""
 			}
+			return false, ""
 		case "plain":
 			if plainParametersValid(r) {
 				return true, "plain"
-			} else {
-				return false, ""
 			}
+			return false, ""
 		}
 	}
 	return false, ""
 }
 
-func parametersInUrl(r *http.Request) bool {
+func parametersInURL(r *http.Request) bool {
 	parameters := r.URL.Query()
 	if len(parameters) < 2 {
 		return false
@@ -38,7 +42,7 @@ func parametersInUrl(r *http.Request) bool {
 func getRequestType(r *http.Request) string {
 	parameters := r.URL.Query()
 	var requestType string
-	for k, _ := range parameters {
+	for k := range parameters {
 		switch k {
 		case "key":
 			requestType = "query"
@@ -50,8 +54,8 @@ func getRequestType(r *http.Request) string {
 }
 
 func plainParametersValid(r *http.Request) bool {
-	key := GetParameterFromUrlByKey("page", r)
-	value := GetParameterFromUrlByKey("size", r)
+	key := GetParameterFromURLByKey("page", r)
+	value := GetParameterFromURLByKey("size", r)
 	_, err := strconv.Atoi(key)
 	if err != nil {
 		return false
@@ -73,6 +77,8 @@ func queryParametersvalid(r *http.Request) bool {
 	return true
 }
 
-func GetParameterFromUrlByKey(key string, r *http.Request) string {
+// GetParameterFromURLByKey takes key and an http Request,
+// returns the value of that key into URL parameters
+func GetParameterFromURLByKey(key string, r *http.Request) string {
 	return r.URL.Query().Get(key)
 }

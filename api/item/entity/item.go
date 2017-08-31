@@ -11,5 +11,5 @@ type Item struct {
 }
 
 type Items struct {
-	Items []Item
+	Items []Item `json:"items"`
 }
