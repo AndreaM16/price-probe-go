@@ -8,6 +8,7 @@ import (
 	"os"
 	"time"
 
+	"github.com/andream16/price-probe-go/api"
 	"github.com/andream16/price-probe-go/api/price/entity"
 	"github.com/gocql/gocql"
 )
@@ -25,7 +26,8 @@ func PricesReceiver(r *http.Request, s *gocql.Session) []byte {
 		fmt.Println("Bad parameter for value.")
 		os.Exit(1)
 	}
-	prices := getPricesFromCassandraByKey(key, value, s)
+	requestBody := &api.RequestBody{key, value}
+	prices := getPricesFromCassandraByKey(requestBody, s)
 	return pricesResponseBuilder(prices)
 }
 
@@ -38,10 +40,10 @@ func pricesResponseBuilder(queryResult priceentity.Prices) []byte {
 	return response
 }
 
-func getPricesFromCassandraByKey(key string, value string, s *gocql.Session) priceentity.Prices {
+func getPricesFromCassandraByKey(requestBody *api.RequestBody, s *gocql.Session) priceentity.Prices {
 	var dateSlice time.Time
 	prices := make([]priceentity.Price, 0)
-	iter := s.Query(`SELECT * FROM `+PriceTable+` WHERE `+key+` = ?`, value).Consistency(gocql.One).Iter()
+	iter := s.Query(`SELECT * FROM `+PriceTable+` WHERE `+(requestBody.Key).(string)+` = ?`, requestBody.Value).Consistency(gocql.One).Iter()
 	for {
 		var price priceentity.Price
 		row := map[string]interface{}{

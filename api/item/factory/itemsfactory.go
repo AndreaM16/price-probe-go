@@ -7,6 +7,7 @@ import (
 	"os"
 	"strconv"
 
+	"github.com/andream16/price-probe-go/api"
 	"github.com/andream16/price-probe-go/api/item/entity"
 	"github.com/gocql/gocql"
 )
@@ -24,7 +25,8 @@ func ItemsReceiver(r *http.Request, s *gocql.Session) []byte {
 		fmt.Println("Bad parameter for size. " + sizeErr.Error())
 		os.Exit(1)
 	}
-	items := getItemsFromCassandra(page, size, s)
+	requestBody := &api.RequestBody{page, size}
+	items := getItemsFromCassandra(requestBody, s)
 	return itemsResponseBuilder(items)
 }
 
@@ -37,10 +39,10 @@ func itemsResponseBuilder(queryResult itementity.Items) []byte {
 	return response
 }
 
-func getItemsFromCassandra(page int, size int, s *gocql.Session) itementity.Items {
+func getItemsFromCassandra(requestBody *api.RequestBody, s *gocql.Session) itementity.Items {
 	var item itementity.Item
 	items := make([]itementity.Item, 0)
-	iter := s.Query(`SELECT * FROM `+itemsTable+` LIMIT ?`, size).Consistency(gocql.One).Iter()
+	iter := s.Query(`SELECT * FROM `+itemsTable+` LIMIT ?`, requestBody.Value).Consistency(gocql.One).Iter()
 	for {
 		row := map[string]interface{}{
 			"item":        &item.ID,
