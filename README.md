@@ -1,4 +1,7 @@
 # price-probe-go
+[![BCH compliance](https://bettercodehub.com/edge/badge/AndreaM16/price-probe-go?branch=master)](https://bettercodehub.com/)
+
+
 Golang Backend born to serve nice and dry data out of REST APis.
 
 ## Some command
