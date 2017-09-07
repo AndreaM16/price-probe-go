@@ -31,6 +31,7 @@ func CheckIfParametersAreValid(r *http.Request) (bool, string) {
 	return false, ""
 }
 
+// parametersInURL check if there are at least 2 parameters in url
 func parametersInURL(r *http.Request) bool {
 	parameters := r.URL.Query()
 	if len(parameters) < 2 {
@@ -39,6 +40,7 @@ func parametersInURL(r *http.Request) bool {
 	return true
 }
 
+// getRequestType check wheter we have to return an item or a slice of items
 func getRequestType(r *http.Request) string {
 	parameters := r.URL.Query()
 	var requestType string
@@ -53,6 +55,7 @@ func getRequestType(r *http.Request) string {
 	return requestType
 }
 
+// plainParametersValid checks whether or not items query is valid
 func plainParametersValid(r *http.Request) bool {
 	key := GetParameterFromURLByKey("page", r)
 	value := GetParameterFromURLByKey("size", r)
@@ -67,6 +70,7 @@ func plainParametersValid(r *http.Request) bool {
 	return true
 }
 
+// queryParametersvalid checks wheter or not item query is valid
 func queryParametersvalid(r *http.Request) bool {
 	parameters := r.URL.Query()
 	for k, v := range parameters {

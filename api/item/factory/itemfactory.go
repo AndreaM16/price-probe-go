@@ -20,12 +20,14 @@ func ItemReceiver(r *http.Request, s *gocql.Session) []byte {
 	return itemResponseBuilder(item)
 }
 
+// itemResponseBuilder takes an item and parses it to json bytes
 func itemResponseBuilder(queryResult itementity.Item) []byte {
 	var response []byte
 	response, _ = json.Marshal(queryResult)
 	return response
 }
 
+// getItemFromCassandraByKey gets one item from cassandra given a requestBody(key, value)
 func getItemFromCassandraByKey(requestBody *api.RequestBody, s *gocql.Session) itementity.Item {
 	var item itementity.Item
 	if err := s.Query(`SELECT * FROM `+itemsTable+` WHERE `+(requestBody.Key).(string)+` = ? ALLOW FILTERING`, requestBody.Value).Consistency(gocql.One).Scan(&item.ID, &item.Category, &item.Description, &item.Img, &item.Pid, &item.Title, &item.URL); err != nil {

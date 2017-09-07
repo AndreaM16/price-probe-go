@@ -30,6 +30,7 @@ func ItemsReceiver(r *http.Request, s *gocql.Session) []byte {
 	return itemsResponseBuilder(items)
 }
 
+// itemsResponseBuilder takes items from the query and marshals them into json bytes
 func itemsResponseBuilder(queryResult itementity.Items) []byte {
 	var response []byte
 	if len(queryResult.Items) == 0 {
@@ -39,6 +40,7 @@ func itemsResponseBuilder(queryResult itementity.Items) []byte {
 	return response
 }
 
+// getItemsFromCassandra takes a request body (key, value) and retrieves the items given by those parameters
 func getItemsFromCassandra(requestBody *api.RequestBody, s *gocql.Session) itementity.Items {
 	var item itementity.Item
 	items := make([]itementity.Item, 0)
@@ -63,6 +65,7 @@ func getItemsFromCassandra(requestBody *api.RequestBody, s *gocql.Session) iteme
 	return itementity.Items{items}
 }
 
+// takeParamFromURL takes an http request and a key, returns the value of that key from url parameters
 func takeParamFromURL(r *http.Request, key string) (int, error) {
 	p, e := strconv.Atoi(GetParameterFromURLByKey(key, r))
 	return p, e
